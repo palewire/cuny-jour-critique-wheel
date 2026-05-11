@@ -173,7 +173,7 @@
 </script>
 
 <svelte:head>
-  <title>Critique Wheel | CUNY Journalism</title>
+  <title>Wheel of Feedback | CUNY Journalism</title>
   <meta
     name="description"
     content="An interactive classroom tool to manage critique sessions at the Craig Newmark Graduate School of Journalism."
