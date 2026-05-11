@@ -1,12 +1,18 @@
 <script>
   import Kicker from '$lib/components/Article/Kicker.svelte';
 
-  let { title = '', subtitle = '' } = $props();
+  let { title = '', subtitle = '', children } = $props();
 </script>
 
 <header class="page-header">
   <Kicker text="Fun and Games" />
-  <h1 class="page-title">{title}</h1>
+  <h1 class="page-title">
+    {#if children}
+      {@render children()}
+    {:else}
+      {title}
+    {/if}
+  </h1>
   {#if subtitle}
     <p class="page-subtitle">{subtitle}</p>
   {/if}
@@ -23,7 +29,7 @@
       font-family: var(--font-serif);
       font-size: var(--font-size-display);
       font-weight: var(--font-weight-bold);
-      color: var(--color-text);
+      color: white;
       margin: var(--spacing-xs) 0;
       line-height: var(--leading-tight);
     }
@@ -41,6 +47,20 @@
       .page-title {
         font-size: var(--font-size-4xl);
       }
+    }
+  }
+
+  :global(.spinning-w) {
+    display: inline-block;
+    animation: slow-spin 4s linear infinite;
+  }
+
+  @keyframes slow-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
 </style>

@@ -15,6 +15,7 @@
 
   /* ─── Critique type options ──────────────────────────────────────────── */
   const CRITIQUE_TYPES = ['Give Praise', 'Suggest Improvement', 'Ask Question'];
+  const CRITIQUE_COLORS = ['#e9c46a', '#e63946', '#2a9d8f'];
 
   /* ─── Example class roster (replace with your actual students) ───────── */
   const DEFAULT_ROSTER =
@@ -152,6 +153,7 @@
       {
         name: allAudience[selectedAudienceIdx],
         type: CRITIQUE_TYPES[selectedTypeIdx],
+        color: CRITIQUE_COLORS[selectedTypeIdx],
       },
     ];
     isSpinning = false;
@@ -183,10 +185,9 @@
      ══════════════════════════════════════════════════════════════════════ -->
 {#if phase === 'setup'}
   <div class="page setup-page">
-    <PageHeader
-      title="Wheel of Feedback"
-      subtitle="A critique session where everyone contributes"
-    />
+    <PageHeader subtitle="A critique session where everyone contributes">
+      <span class="spinning-w">W</span>heel of Feedback
+    </PageHeader>
 
     <StudentRoster
       bind:value={rawInput}
@@ -233,9 +234,6 @@
         <p class="complete-sub">
           Every student has presented. Great work, everyone.
         </p>
-        <button class="btn btn-primary btn-lg" onclick={handleReset}>
-          Start a New Session
-        </button>
       </div>
     {:else}
       <!-- Presenter banner -->
@@ -279,6 +277,7 @@
           <SpinWheel
             bind:this={wheel2}
             items={CRITIQUE_TYPES}
+            colors={CRITIQUE_COLORS}
             label="What?"
             onSpinComplete={onWheel2Complete}
           />
@@ -296,7 +295,10 @@
               </span>
               <span class="result-name">{student}</span>
               {#if result}
-                <span class="result-type">{result.type}</span>
+                <span
+                  class="result-type"
+                  style="background: {result.color}; color: {result.color === '#e9c46a' ? '#333' : 'white'};"
+                >{result.type}</span>
               {/if}
             </li>
           {/each}
@@ -305,10 +307,6 @@
 
       <!-- Navigation controls -->
       <div class="session-footer">
-        <button class="btn btn-secondary btn-sm" onclick={handleReset}>
-          Reset
-        </button>
-
         {#if roundComplete}
           {#if currentIdx + 1 < presentationOrder.length}
             <button
@@ -336,8 +334,8 @@
 
   /* ── Shared page shell ──────────────────────────────────────────────── */
   .page {
-    background: var(--color-white);
-    color: var(--color-text);
+    background: var(--color-cuny-blue-dark);
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -386,13 +384,13 @@
   }
 
   .btn-secondary {
-    background: rgba(0, 0, 0, 0.06);
-    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
     padding: 0.6rem 1.4rem;
     font-size: var(--font-size-base);
 
     &:not(:disabled):hover {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.25);
     }
   }
 
@@ -467,7 +465,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    background: var(--color-light-gray);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     padding: 0.65rem 1rem;
   }
@@ -476,7 +474,7 @@
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
-    color: var(--color-accent);
+    color: rgba(255, 255, 255, 0.6);
     width: 1.6rem;
     text-align: right;
     flex-shrink: 0;
@@ -509,7 +507,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    background: var(--color-accent);
+    background: rgba(255, 255, 255, 0.12);
     color: white;
     border-radius: var(--border-radius-sm);
     padding: var(--spacing-sm) var(--spacing-md);
@@ -592,15 +590,15 @@
     gap: 0.75rem;
     padding: 0.4rem 0.75rem;
     border-radius: 6px;
-    background: var(--color-light-gray);
-    color: var(--color-medium-gray);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.4);
     transition:
       color 0.3s,
       background 0.3s;
 
     &.done {
-      color: var(--color-text);
-      background: rgba(0, 51, 161, 0.06);
+      color: white;
+      background: rgba(255, 255, 255, 0.12);
     }
   }
 
@@ -618,8 +616,6 @@
   .result-type {
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
-    background: rgba(0, 51, 161, 0.1);
-    color: var(--color-accent);
     border-radius: 4rem;
     padding: 0.1rem 0.6rem;
   }
@@ -648,7 +644,7 @@
     font-family: var(--font-serif);
     font-size: var(--font-size-6xl);
     font-weight: var(--font-weight-normal);
-    color: var(--color-text);
+    color: white;
   }
 
   .complete-sub {

@@ -33,8 +33,8 @@
   .setup-card {
     width: 100%;
     max-width: 480px;
-    background: var(--color-light-gray);
-    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--border-radius-sm);
     padding: var(--spacing-lg);
     display: flex;
@@ -48,15 +48,15 @@
     font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     letter-spacing: var(--letter-spacing-wider);
-    color: var(--color-medium-gray);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .students-textarea {
     width: 100%;
-    background: var(--color-white);
-    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
-    color: var(--color-text);
+    color: white;
     font-family: var(--font-sans);
     font-size: var(--font-size-base);
     line-height: var(--leading-relaxed);
@@ -65,12 +65,12 @@
     outline: none;
 
     &:focus {
-      border-color: var(--color-cuny-blue-light);
-      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.35);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
     }
 
     &::placeholder {
-      opacity: 0.35;
+      color: rgba(255, 255, 255, 0.35);
     }
   }
 

@@ -80,12 +80,7 @@ SiteHeader.svelte — NYCity News Service Style Header
 
   /* Full-width blue background with animated dark-to-light gradient */
   .masthead-wrapper {
-    background: linear-gradient(
-      90deg,
-      var(--color-cuny-blue-dark) 0%,
-      var(--color-accent) 50%,
-      var(--color-cuny-blue-light) 100%
-    );
+    background: var(--color-cuny-blue-dark);
     background-size: 200% 100%;
     animation: gradient-sweep 6s ease-in-out infinite;
   }

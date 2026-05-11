@@ -17,6 +17,7 @@
     items = [],
     doneIndices = [],
     label = '',
+    colors = null,
     onSpinComplete = () => {},
   } = $props();
 
@@ -40,6 +41,8 @@
     '#d62828',
     '#06d6a0',
   ];
+
+  const palette = $derived(colors ?? COLORS);
 
   /* ─── Internal state ────────────────────────────────────────────────── */
   let rotation = $state(0);
@@ -166,7 +169,7 @@
         <!-- Segment -->
         <path
           d={segmentPath(i, items.length)}
-          fill={COLORS[i % COLORS.length]}
+          fill={palette[i % palette.length]}
           stroke="white"
           stroke-width="2"
           opacity={doneIndices.includes(i) ? 0.25 : 1}
@@ -234,7 +237,7 @@
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
-    color: var(--color-text);
+    color: white;
     text-transform: uppercase;
     letter-spacing: var(--letter-spacing-wider);
     opacity: 0.65;
@@ -251,8 +254,8 @@
 
   .pointer {
     font-size: 1.75rem;
-    color: var(--color-dark);
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    color: white;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
     line-height: 1;
     transform: translateY(8px);
     display: block;
@@ -277,7 +280,7 @@
 
     &.empty {
       background: transparent;
-      border: 2px dashed var(--color-border);
+      border: 2px dashed rgba(255, 255, 255, 0.3);
       color: transparent;
     }
 
