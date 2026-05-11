@@ -297,8 +297,11 @@
               {#if result}
                 <span
                   class="result-type"
-                  style="background: {result.color}; color: {result.color === '#e9c46a' ? '#333' : 'white'};"
-                >{result.type}</span>
+                  style="background: {result.color}; color: {result.color ===
+                  '#e9c46a'
+                    ? '#333'
+                    : 'white'};">{result.type}</span
+                >
               {/if}
             </li>
           {/each}
@@ -313,7 +316,7 @@
               class="btn btn-primary btn-lg"
               onclick={handleNextPresenter}
             >
-              Next Presenter
+              Next up!
             </button>
           {:else}
             <button

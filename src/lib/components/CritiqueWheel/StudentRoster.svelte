@@ -23,7 +23,7 @@
   {/if}
 
   <button class="btn btn-primary btn-lg" onclick={onsubmit} disabled={!!error}>
-    Spin the wheel
+    Spin the wheel!
   </button>
 </div>
 
