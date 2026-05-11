@@ -9,14 +9,16 @@
                and a critique type (Praise / Improvement / Question)
 -->
 <script>
+  import PageHeader from '$lib/components/CritiqueWheel/PageHeader.svelte';
+  import StudentRoster from '$lib/components/CritiqueWheel/StudentRoster.svelte';
   import SpinWheel from '$lib/components/CritiqueWheel/SpinWheel.svelte';
 
   /* ─── Critique type options ──────────────────────────────────────────── */
-  const CRITIQUE_TYPES = ['🌟 Praise', '💡 Improvement', '❓ Question'];
+  const CRITIQUE_TYPES = ['Give Praise', 'Suggest Improvement', 'Ask Question'];
 
   /* ─── Example class roster (replace with your actual students) ───────── */
   const DEFAULT_ROSTER =
-    'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHank\nIvy\nJack';
+    'Ashley\nChloe\nChrissy\nEmma\nIrene\nJack\nNancy\nNiya\nSidney\nSophie';
 
   /* ─── App phase ─────────────────────────────────────────────────────── */
   let phase = $state('setup');
@@ -181,49 +183,17 @@
      ══════════════════════════════════════════════════════════════════════ -->
 {#if phase === 'setup'}
   <div class="page setup-page">
-    <header class="page-header">
-      <div class="logo-bar">
-        <span class="logo-text">CUNY</span>
-        <span class="logo-sub">Journalism</span>
-      </div>
-      <h1 class="page-title">Critique Wheel</h1>
-      <p class="page-subtitle">
-        Enter the class roster to generate a random presentation order and run
-        an interactive critique session.
-      </p>
-    </header>
+    <PageHeader
+      title="Wheel of Feedback"
+      subtitle="A critique session where everyone contributes"
+    />
 
-    <div class="setup-card">
-      <label class="field-label" for="students-input">
-        Student names <span class="field-hint">(one per line)</span>
-      </label>
-      <textarea
-        id="students-input"
-        class="students-textarea"
-        bind:value={rawInput}
-        rows="12"
-        placeholder="Alice&#10;Bob&#10;Carol&#10;…"
-        spellcheck="false"
-      ></textarea>
-
-      {#if setupError}
-        <p class="error-msg" role="alert">{setupError}</p>
-      {:else}
-        <p class="count-msg">
-          {parsedStudents.length} student{parsedStudents.length === 1
-            ? ''
-            : 's'} entered
-        </p>
-      {/if}
-
-      <button
-        class="btn btn-primary btn-lg"
-        onclick={handleRandomise}
-        disabled={!!setupError}
-      >
-        🎲 Randomise Order
-      </button>
-    </div>
+    <StudentRoster
+      bind:value={rawInput}
+      studentCount={parsedStudents.length}
+      error={setupError}
+      onsubmit={handleRandomise}
+    />
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════════════
@@ -232,14 +202,7 @@
 {:else if phase === 'order'}
   <div class="page order-page">
     <header class="page-header">
-      <div class="logo-bar">
-        <span class="logo-text">CUNY</span>
-        <span class="logo-sub">Journalism</span>
-      </div>
-      <h1 class="page-title">Presentation Order</h1>
-      <p class="page-subtitle">
-        The order has been randomised. Review it below, then begin the session.
-      </p>
+      <PageHeader title="Presentation order" />
     </header>
 
     <ol class="order-list">
@@ -252,11 +215,8 @@
     </ol>
 
     <div class="order-actions">
-      <button class="btn btn-secondary" onclick={handleRandomise}>
-        🎲 Re-randomise
-      </button>
       <button class="btn btn-primary btn-lg" onclick={handleBeginSession}>
-        ▶ Begin Session
+        READY?
       </button>
     </div>
   </div>
@@ -269,7 +229,6 @@
     {#if sessionComplete}
       <!-- All presenters done -->
       <div class="complete-screen">
-        <div class="complete-emoji" aria-hidden="true">🎉</div>
         <h1 class="complete-title">Session Complete!</h1>
         <p class="complete-sub">
           Every student has presented. Great work, everyone.
@@ -281,7 +240,6 @@
     {:else}
       <!-- Presenter banner -->
       <div class="presenter-banner">
-        <span class="presenter-label">Now Presenting</span>
         <span class="presenter-name">{currentPresenter}</span>
         <span class="round-badge">
           {currentIdx + 1} / {presentationOrder.length}
@@ -295,7 +253,7 @@
             bind:this={wheel1}
             items={allAudience}
             doneIndices={doneAudienceIndices}
-            label="Who critiques?"
+            label="Who?"
             onSpinComplete={onWheel1Complete}
           />
         </div>
@@ -310,10 +268,10 @@
                 ? 'Wheels are spinning…'
                 : 'Spin both wheels'}
             >
-              {isSpinning ? '⏳' : '🎡'}<br />SPIN
+              SPIN
             </button>
           {:else}
-            <div class="round-done-icon" aria-hidden="true">✅</div>
+            <div class="round-done-icon" aria-hidden="true">Done</div>
           {/if}
         </div>
 
@@ -321,7 +279,7 @@
           <SpinWheel
             bind:this={wheel2}
             items={CRITIQUE_TYPES}
-            label="What type?"
+            label="What?"
             onSpinComplete={onWheel2Complete}
           />
         </div>
@@ -329,13 +287,12 @@
 
       <!-- Critique log -->
       <div class="results-section">
-        <h2 class="results-title">Critique log</h2>
         <ul class="results-list">
           {#each allAudience as student (student)}
             {@const result = roundResults.find((r) => r.name === student)}
             <li class="result-row" class:done={!!result}>
               <span class="result-check" aria-hidden="true">
-                {result ? '✅' : '⬜'}
+                {result ? '✓' : '—'}
               </span>
               <span class="result-name">{student}</span>
               {#if result}
@@ -349,7 +306,7 @@
       <!-- Navigation controls -->
       <div class="session-footer">
         <button class="btn btn-secondary btn-sm" onclick={handleReset}>
-          ↩ Reset
+          Reset
         </button>
 
         {#if roundComplete}
@@ -358,14 +315,14 @@
               class="btn btn-primary btn-lg"
               onclick={handleNextPresenter}
             >
-              Next Presenter →
+              Next Presenter
             </button>
           {:else}
             <button
               class="btn btn-primary btn-lg"
               onclick={handleNextPresenter}
             >
-              Finish Session 🎉
+              Finish Session
             </button>
           {/if}
         {/if}
@@ -379,65 +336,13 @@
 
   /* ── Shared page shell ──────────────────────────────────────────────── */
   .page {
-    min-height: 100dvh;
-    background: #111;
-    color: var(--color-white);
+    background: var(--color-white);
+    color: var(--color-text);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: var(--spacing-lg) var(--spacing-md);
     box-sizing: border-box;
-  }
-
-  /* ── Logo bar ───────────────────────────────────────────────────────── */
-  .logo-bar {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .logo-text {
-    font-family: var(--font-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-extrabold);
-    letter-spacing: var(--letter-spacing-wider);
-    background: var(--color-accent);
-    color: white;
-    padding: 0.15rem 0.45rem;
-    border-radius: 3px;
-  }
-
-  .logo-sub {
-    font-family: var(--font-sans);
-    font-size: var(--font-size-sm);
-    opacity: 0.6;
-    letter-spacing: var(--letter-spacing-wide);
-    text-transform: uppercase;
-  }
-
-  /* ── Page header ────────────────────────────────────────────────────── */
-  .page-header {
-    text-align: center;
-    margin-bottom: var(--spacing-lg);
-  }
-
-  .page-title {
-    font-family: var(--font-serif);
-    font-size: var(--font-size-6xl);
-    font-weight: var(--font-weight-normal);
-    color: var(--color-white);
-    margin-bottom: var(--spacing-xs);
-    line-height: var(--leading-tight);
-  }
-
-  .page-subtitle {
-    font-family: var(--font-sans);
-    font-size: var(--font-size-lg);
-    opacity: 0.65;
-    max-width: 520px;
-    margin: 0 auto;
-    line-height: var(--leading-normal);
   }
 
   /* ── Buttons ────────────────────────────────────────────────────────── */
@@ -465,7 +370,7 @@
     }
 
     &:not(:disabled):active {
-      transform: scale(0.97);
+      transform: none;
     }
   }
 
@@ -481,13 +386,13 @@
   }
 
   .btn-secondary {
-    background: rgba(255, 255, 255, 0.12);
-    color: white;
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--color-text);
     padding: 0.6rem 1.4rem;
     font-size: var(--font-size-base);
 
     &:not(:disabled):hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -513,80 +418,32 @@
     height: 9rem;
     line-height: 1.2;
     letter-spacing: var(--letter-spacing-wider);
-    box-shadow: 0 0 24px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: throb 2s ease-in-out infinite;
 
     &:not(:disabled):hover {
       background: #ffe84d;
-      box-shadow: 0 0 36px rgba(255, 215, 0, 0.6);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    &:disabled {
+      animation: none;
+    }
+  }
+
+  @keyframes throb {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
     }
   }
 
   /* ── Setup page ─────────────────────────────────────────────────────── */
   .setup-page {
-    justify-content: center;
-  }
-
-  .setup-card {
-    width: 100%;
-    max-width: 480px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-sm);
-    padding: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  .field-label {
-    font-family: var(--font-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wider);
-    color: rgba(255, 255, 255, 0.75);
-  }
-
-  .field-hint {
-    font-weight: var(--font-weight-normal);
-    opacity: 0.6;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .students-textarea {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: white;
-    font-family: var(--font-sans);
-    font-size: var(--font-size-base);
-    line-height: var(--leading-relaxed);
-    padding: 0.75rem 1rem;
-    resize: vertical;
-    outline: none;
-
-    &:focus {
-      border-color: var(--color-cuny-blue-light);
-      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.35);
-    }
-
-    &::placeholder {
-      opacity: 0.35;
-    }
-  }
-
-  .error-msg {
-    font-size: var(--font-size-sm);
-    color: #ff6b6b;
-    margin: 0;
-  }
-
-  .count-msg {
-    font-size: var(--font-size-sm);
-    opacity: 0.55;
-    margin: 0;
+    justify-content: flex-start;
   }
 
   /* ── Order page ─────────────────────────────────────────────────────── */
@@ -610,7 +467,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--color-light-gray);
     border-radius: 6px;
     padding: 0.65rem 1rem;
   }
@@ -653,6 +510,7 @@
     align-items: center;
     gap: var(--spacing-sm);
     background: var(--color-accent);
+    color: white;
     border-radius: var(--border-radius-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     flex-wrap: wrap;
@@ -664,7 +522,7 @@
     font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     letter-spacing: var(--letter-spacing-wider);
-    opacity: 0.75;
+    opacity: 0.85;
     flex-shrink: 0;
   }
 
@@ -678,7 +536,7 @@
   .round-badge {
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.25);
     border-radius: 4rem;
     padding: 0.2rem 0.75rem;
     flex-shrink: 0;
@@ -719,16 +577,6 @@
     max-width: 520px;
   }
 
-  .results-title {
-    font-family: var(--font-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wider);
-    opacity: 0.55;
-    margin-bottom: var(--spacing-xs);
-  }
-
   .results-list {
     list-style: none;
     padding: 0;
@@ -744,13 +592,15 @@
     gap: 0.75rem;
     padding: 0.4rem 0.75rem;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    opacity: 0.5;
-    transition: opacity 0.3s;
+    background: var(--color-light-gray);
+    color: var(--color-medium-gray);
+    transition:
+      color 0.3s,
+      background 0.3s;
 
     &.done {
-      opacity: 1;
-      background: rgba(255, 255, 255, 0.08);
+      color: var(--color-text);
+      background: rgba(0, 51, 161, 0.06);
     }
   }
 
@@ -768,8 +618,8 @@
   .result-type {
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
-    background: rgba(255, 215, 0, 0.15);
-    color: #ffd700;
+    background: rgba(0, 51, 161, 0.1);
+    color: var(--color-accent);
     border-radius: 4rem;
     padding: 0.1rem 0.6rem;
   }
@@ -794,16 +644,11 @@
     margin: auto;
   }
 
-  .complete-emoji {
-    font-size: 5rem;
-    animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
   .complete-title {
     font-family: var(--font-serif);
     font-size: var(--font-size-6xl);
     font-weight: var(--font-weight-normal);
-    color: white;
+    color: var(--color-text);
   }
 
   .complete-sub {
@@ -826,10 +671,6 @@
 
   /* ── Responsive tweaks ──────────────────────────────────────────────── */
   @include mobile {
-    .page-title {
-      font-size: var(--font-size-4xl);
-    }
-
     .presenter-name {
       font-size: var(--font-size-2xl);
     }

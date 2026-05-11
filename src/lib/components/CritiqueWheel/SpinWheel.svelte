@@ -190,8 +190,8 @@
       {/each}
 
       <!-- Centre cap -->
-      <circle cx={CX} cy={CY} r="22" fill="white" />
-      <circle cx={CX} cy={CY} r="19" fill="#1a1a1a" />
+      <circle cx={CX} cy={CY} r="22" fill="#f5f5f5" />
+      <circle cx={CX} cy={CY} r="19" fill="white" />
     </g>
 
     <!-- Static outer ring for polish -->
@@ -200,18 +200,24 @@
       cy={CY}
       r={R + 3}
       fill="none"
-      stroke="white"
+      stroke="#e0e0e0"
       stroke-width="3"
-      opacity="0.25"
+      opacity="0.5"
     />
   </svg>
 
-  <!-- Result badge shown once the wheel stops -->
-  {#if highlightedIndex !== null && items[highlightedIndex]}
-    <div class="result-badge" role="status" aria-live="polite">
-      {items[highlightedIndex]}
-    </div>
-  {/if}
+  <!-- Result badge: empty placeholder before spin, filled after -->
+  <div
+    class="result-badge"
+    class:empty={highlightedIndex === null}
+    class:filled={highlightedIndex !== null}
+    role="status"
+    aria-live="polite"
+  >
+    {highlightedIndex !== null && items[highlightedIndex]
+      ? items[highlightedIndex]
+      : ' '}
+  </div>
 </div>
 
 <style lang="scss">
@@ -228,7 +234,7 @@
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
-    color: var(--color-white);
+    color: var(--color-text);
     text-transform: uppercase;
     letter-spacing: var(--letter-spacing-wider);
     opacity: 0.65;
@@ -245,8 +251,8 @@
 
   .pointer {
     font-size: 1.75rem;
-    color: #ffd700;
-    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.9));
+    color: var(--color-dark);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
     line-height: 1;
     transform: translateY(8px);
     display: block;
@@ -259,8 +265,6 @@
   }
 
   .result-badge {
-    background: #ffd700;
-    color: #111;
     font-family: var(--font-serif);
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
@@ -268,8 +272,21 @@
     border-radius: 4rem;
     text-align: center;
     max-width: 100%;
+    min-width: 6rem;
     word-break: break-word;
-    animation: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &.empty {
+      background: transparent;
+      border: 2px dashed var(--color-border);
+      color: transparent;
+    }
+
+    &.filled {
+      background: var(--color-accent);
+      color: white;
+      border: 2px solid var(--color-accent);
+      animation: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
   }
 
   @keyframes pop-in {
