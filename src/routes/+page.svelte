@@ -316,7 +316,7 @@
               class="btn btn-primary btn-lg"
               onclick={handleNextPresenter}
             >
-              Next up!
+              Next presenter
             </button>
           {:else}
             <button
