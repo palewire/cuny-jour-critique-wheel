@@ -14,13 +14,15 @@
   /* ─── Critique type options ──────────────────────────────────────────── */
   const CRITIQUE_TYPES = ['🌟 Praise', '💡 Improvement', '❓ Question'];
 
+  /* ─── Example class roster (replace with your actual students) ───────── */
+  const DEFAULT_ROSTER =
+    'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHank\nIvy\nJack';
+
   /* ─── App phase ─────────────────────────────────────────────────────── */
   let phase = $state('setup');
 
   /* ─── Setup phase state ─────────────────────────────────────────────── */
-  let rawInput = $state(
-    'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHank\nIvy\nJack'
-  );
+  let rawInput = $state(DEFAULT_ROSTER);
 
   const parsedStudents = $derived(
     rawInput
@@ -304,7 +306,9 @@
               class="btn btn-spin"
               onclick={handleSpin}
               disabled={isSpinning || roundComplete}
-              aria-label="Spin both wheels"
+              aria-label={isSpinning
+                ? 'Wheels are spinning…'
+                : 'Spin both wheels'}
             >
               {isSpinning ? '⏳' : '🎡'}<br />SPIN
             </button>
